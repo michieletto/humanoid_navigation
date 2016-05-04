@@ -1,9 +1,25 @@
 <launch>
-  # naoqi should be running right now
+  <!-- NaoQI should be running right now -->
+  <arg name="nao_ip"              default="$(optenv NAO_IP 127.0.0.1)" />
+  <arg name="nao_port"            default="$(optenv NAO_PORT 9559)" />
 
-  <include file="$(find nao_driver)/launch/nao_footsteps.launch" />
+  <arg name="roscore_ip"          default="127.0.0.1" />
+  <arg name="network_interface"   default="eth0" />
 
-  <include file="$(find nao_remote)/launch/nao_remote.launch" />
+  <arg name="namespace"           default="nao_robot" />
+  
+  <include file="$(find nao_bringup)/launch/nao_full.launch">
+    <arg name="nao_ip"            value="$(arg nao_ip)" />
+    <arg name="nao_port"          value="$(arg nao_port)" />
+    <arg name="roscore_ip"        value="$(arg roscore_ip)" />
+    <arg name="network_interface" value="$(arg network_interface)" />
+    <arg name="namespace"         value="$(arg namespace)" />
+  </include>
+
+  <include file="$(find nao_apps)/launch/footsteps.launch">
+    <arg name="nao_ip"            value="$(arg nao_ip)" />
+    <arg name="nao_port"          value="$(arg nao_port)" />
+  </include>
 
   <include file="$(find footstep_planner)/launch/fake_loc_from_odom.launch" />
   <node name="map_server" pkg="map_server" type="map_server" args="$(find footstep_planner)/maps/sample.yaml" />
